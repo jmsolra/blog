@@ -11,5 +11,6 @@ const User = createModel('users')
 module.exports = createRouter({
   model: User,
   validator: validateUser,
-  createMiddlewares: [rejectDups(User, generateDupQuery)]
+  createMiddlewares: [rejectDups(User, generateDupQuery)],
+  updateMiddlewares: [rejectDups(User, generateDupQuery)]
 })

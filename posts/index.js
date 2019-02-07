@@ -21,7 +21,8 @@ const userIsRegistered = (req, res, next) => {
 const postsRouter = createRouter({
   model: Post,
   validator: validatePost,
-  createMiddlewares: [rejectDups(Post, generateDupQuery)]
+  createMiddlewares: [rejectDups(Post, generateDupQuery)],
+  updateMiddlewares: [rejectDups(Post, generateDupQuery)]
 })
 
 module.exports = postsRouter
