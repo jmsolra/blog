@@ -1,12 +1,12 @@
 const createRouter = require('../lib/createRouter')
-const createModel = require('../lib/createModel')
+//const createModel = require('../lib/createModel')
 const validateUser = require('./validateUser')
 const rejectDups = require('../lib/rejectDuplicate')
+const User = require('../models/user')
 
 const generateDupQuery = data => {
   return data.email ? { email: data.email } : false
 }
-const User = createModel('users')
 
 module.exports = createRouter({
   model: User,

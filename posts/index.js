@@ -2,7 +2,7 @@ const createRouter = require('../lib/createRouter')
 const createModel = require('../lib/createModel')
 const rejectDups = require('../lib/rejectDuplicate')
 const validatePost = require('./validatePost')
-const Post = createModel('posts')
+const Post = require('../models/post')
 
 const generateDupQuery = data => {
   return data.name ? { name: data.name } : false

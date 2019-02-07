@@ -1,19 +1,13 @@
 const express = require('express')
 const mongoClient = require('./mongo')
+const mongooseClient = require('./mongoose')
 const usersRouter = require('./users')
 const postsRouter = require('./posts')
 const app = express()
 
-mongoClient
-  .connect()
-  .then(client => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Conectado en desarrollo')
-    } else {
-      console.log('Shhh')
-    }
-  })
-  .catch(err => console.error('Error conexion Mongo: ', err))
+const dbConection = mongooseClient.connection
+dbConection.on('error', err => console.error(err))
+dbConection.on('open', () => console.log('Conectado a mongo'))
 
 app.use(express.json())
 app.use('/posts', [postsRouter])
