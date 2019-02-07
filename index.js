@@ -7,7 +7,11 @@ const app = express()
 mongoClient
   .connect()
   .then(client => {
-    console.log('Conectado')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Conectado en desarrollo')
+    } else {
+      console.log('Shhh')
+    }
   })
   .catch(err => console.error('Error conexion Mongo: ', err))
 
