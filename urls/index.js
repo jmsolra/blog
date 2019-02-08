@@ -90,13 +90,19 @@ function urlRouter(client) {
   router.get('/listall', (req, res) => {
     redisAsync
       .hgetall(URLS_HASH)
-      .then(data =>
-        Object.keys(data).map(url => ({
+      .then(data => {
+        if (!data) return []
+
+        return Object.keys(data).map(url => ({
           url,
           shortUrl: data[url]
         }))
-      )
+      })
       .then(data => res.json(data))
+      .catch(err => {
+        console.error(err)
+        res.status(500).json({ err: err.message })
+      })
   })
 
   // GET /shortUrl -> URL

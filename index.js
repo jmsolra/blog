@@ -13,7 +13,7 @@ dbConection.on('error', err => console.error(err))
 dbConection.on('open', () => console.log('Conectado a mongo'))
 
 // Redis
-const client = redis.createClient(32768, 'localhost')
+const client = redis.createClient()
 client.on('error', err => {
   console.error(err)
 })
