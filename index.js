@@ -1,12 +1,13 @@
 const express = require("express")
 const redis = require("redis")
-const io = require("socket.io")
+const socketio = require("socket.io")
 const http = require("http")
 
 const mongooseClient = require("./mongoose")
 const usersRouter = require("./users")
 const postsRouter = require("./posts")
 const urlsRouter = require("./urls")
+const chat = require("./chat")
 
 const app = express()
 const server = http.Server(app)
@@ -24,10 +25,15 @@ client.on("error", err => {
 client.on("connect", function() {
   console.log("Redis client connected")
 })
-
 // Socket.io
-io(server)
+const io = socketio(server)
+chat(io)
 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html") // Coge de la raíz (__dirname)
+})
+
+app.use("/public", express.static("./public"))
 app.use(express.json())
 app.use("/posts", postsRouter)
 app.use("/users", usersRouter)
