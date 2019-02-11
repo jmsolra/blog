@@ -2,6 +2,10 @@ const socket = io({
   transports: ["websocket"]
 })
 
+socket.on("connect", () => {
+  socket.emit("list:urls", console.log)
+})
+
 const userName = prompt("¿Nombre de usuario?", "Usuario")
 const msgInput = document.querySelector("#m")
 const btn = document.querySelector("#btn")

@@ -27,7 +27,7 @@ client.on("connect", function() {
 })
 // Socket.io
 const io = socketio(server)
-chat(io)
+chat(io, client)
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html") // Coge de la raíz (__dirname)

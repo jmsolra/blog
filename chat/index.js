@@ -1,4 +1,7 @@
-module.exports = io => {
+const UrlService = require("../urls/shortUrlService")
+
+module.exports = (io, redisClient) => {
+  const urlService = UrlService(redisClient)
   io.on("connection", socket => {
     console.log("Cliente WS conectado", socket.id)
     socket.send("chat", {
@@ -11,5 +14,9 @@ module.exports = io => {
     })
     socket.on("typing", payload => socket.broadcast.emit("typing", payload))
     socket.on("notTyping", () => socket.broadcast.emit("notTyping"))
+
+    socket.on("list:urls", cb => {
+      urlService.find().then(cb)
+    })
   })
 }
