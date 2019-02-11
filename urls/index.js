@@ -1,30 +1,30 @@
-const util = require('util')
-const shortid = require('shortid')
-const { Router } = require('express')
+const util = require("util")
+const shortid = require("shortid")
+const { Router } = require("express")
 
 /**
  * Genera el router del servicio de acortamiento de urls
  * @param {RedisClient} client
  */
 function urlRouter(client) {
-  const URLS_HASH = 'urls'
-  const SHORT_HASH = 'short_urls'
-  const VISITS = 'visits'
+  const URLS_HASH = "urls"
+  const SHORT_HASH = "short_urls"
+  const VISITS = "visits"
 
   const router = Router()
   const promisyFns = [
-    'hget',
-    'hset',
-    'hgetall',
-    'hmset',
-    'zincrby',
-    'zrevrange'
+    "hget",
+    "hset",
+    "hgetall",
+    "hmset",
+    "zincrby",
+    "zrevrange"
   ]
   const redisAsync = promisyFns.reduce((acc, fnName) => {
-    if (typeof client[fnName] === 'function') {
+    if (typeof client[fnName] === "function") {
       acc[fnName] = util.promisify(client[fnName]).bind(client)
     } else {
-      console.warn('La funcion', fnName, ' te la has inventado')
+      console.warn("La funcion", fnName, " te la has inventado")
     }
     return acc
   }, {})
@@ -44,14 +44,14 @@ function urlRouter(client) {
 
   const getUrl = shorturl => {
     return redisAsync.hget(SHORT_HASH, shorturl).then(url => {
-      if (!url) throw new Error('no encontrado')
+      if (!url) throw new Error("no encontrado")
       return redisAsync.zincrby(VISITS, 1, url).then(() => url)
     })
   }
 
   const getRanking = () => {
     return redisAsync
-      .zrevrange(VISITS, 0, -1, 'withscores')
+      .zrevrange(VISITS, 0, -1, "withscores")
       .then((data = []) => {
         const results = []
         for (let i = 0; i < data.length; i++) {
@@ -67,7 +67,7 @@ function urlRouter(client) {
   }
 
   // CREAR short url
-  router.post('/', function(req, res) {
+  router.post("/", function(req, res) {
     const { url } = req.body
 
     redisAsync
@@ -80,14 +80,14 @@ function urlRouter(client) {
   })
   // GET /ranking
   //
-  router.get('/ranking', (req, res) => {
+  router.get("/ranking", (req, res) => {
     getRanking()
       .then(results => res.json(results))
       .catch(err => res.status(500).end())
   })
 
   // GET /urls
-  router.get('/listall', (req, res) => {
+  router.get("/listall", (req, res) => {
     redisAsync
       .hgetall(URLS_HASH)
       .then(data => {
@@ -106,10 +106,10 @@ function urlRouter(client) {
   })
 
   // GET /shortUrl -> URL
-  router.get('/:shorturl', function(req, res) {
+  router.get("/:shorturl", function(req, res) {
     const { shorturl } = req.params
     getUrl(shorturl)
-      .then(url => res.json(url))
+      .then(url => res.redirect(url))
       .catch(err => res.status(404).end())
   })
 
