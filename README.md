@@ -1,3 +1,3 @@
 # blog
-example blog with node.js
-Hola soy robin
+
+Example: A blog with node.js
