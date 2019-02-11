@@ -16,10 +16,16 @@ function addMessageToList(html) {
 
 function enviarMensaje() {
   const texto = msgInput.value
-  socket.emit("sendMessage", {
-    text: texto,
-    from: userName
-  })
+  socket.emit(
+    "sendMessage",
+    {
+      text: texto,
+      from: userName
+    },
+    res => {
+      console.log("Recibido en el server a las", res, new Date(res.timestamp))
+    }
+  )
   msgInput.value = ""
 }
 

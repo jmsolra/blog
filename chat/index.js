@@ -4,9 +4,10 @@ module.exports = io => {
     socket.send("chat", {
       text: "Bienvenido!"
     })
-    socket.on("sendMessage", payload => {
+    socket.on("sendMessage", (payload, cb) => {
       console.log("Recibido ", payload)
       io.emit("chat", payload)
+      cb({ timestamp: Date.now() })
     })
     socket.on("typing", payload => socket.broadcast.emit("typing", payload))
     socket.on("notTyping", () => socket.broadcast.emit("notTyping"))
